@@ -66,4 +66,5 @@ async def translate_speech(file: UploadFile = File(...), target_language: str = 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 10000))  # Use Render's provided PORT
+    uvicorn.run(app, host="0.0.0.0", port=port)
