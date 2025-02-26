@@ -7,7 +7,6 @@ import tempfile
 from fastapi.responses import FileResponse
 from pydub import AudioSegment
 import os
-import pyttsx3
 
 app = FastAPI()
 translator = Translator()
@@ -41,10 +40,9 @@ async def translate_speech(file: UploadFile = File(...), target_language: str = 
         temp_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
 
         if target_language == "fa":
-    # Use gTTS workaround for Farsi
-    tts = gTTS(translated_text, lang="fa")
-    tts.save(temp_audio.name)
-    
+            # Use gTTS workaround for Farsi
+            tts = gTTS(translated_text, lang="fa")
+            tts.save(temp_audio.name)
         else:
             # Use gTTS for all other languages
             tts = gTTS(translated_text, lang=target_language)
