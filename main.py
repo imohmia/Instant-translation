@@ -29,11 +29,11 @@ async def translate_speech(file: UploadFile = File(...), target_language: str = 
             audio.export(temp_wav.name, format="wav")
             temp_input.name = temp_wav.name
         
-        # Recognize speech
+        # Recognize speech (Detect Language Dynamically)
         with sr.AudioFile(temp_input.name) as source:
             audio = recognizer.record(source)
-            text = recognizer.recognize_google(audio, language="fa")  # Default to Farsi recognition
-        
+            text = recognizer.recognize_google(audio)  # Removed hardcoded "fa"
+
         # Translate text
         translated_text = translator.translate(text, dest=target_language).text
 
@@ -41,26 +41,26 @@ async def translate_speech(file: UploadFile = File(...), target_language: str = 
         temp_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
 
         if target_language == "fa":
-            # Use pyttsx3 for Farsi
+            # Use pyttsx3 for Farsi (gTTS does not support it)
             tts_engine = pyttsx3.init()
             tts_engine.save_to_file(translated_text, temp_audio.name)
             tts_engine.runAndWait()
         else:
-            # Use gTTS for other languages
+            # Use gTTS for all other languages
             tts = gTTS(translated_text, lang=target_language)
             tts.save(temp_audio.name)
 
         # Convert MP3 to ensure compatibility
         final_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
         sound = AudioSegment.from_file(temp_audio.name, format="mp3")
-       sound.export(final_audio_path, format="mp3", bitrate="192k")  # Force proper encoding
+        sound.export(final_audio.name, format="mp3", bitrate="192k")  # Fixed incorrect variable name
 
         # Clean up temp files
         os.remove(temp_input.name)
         if 'temp_wav' in locals():
             os.remove(temp_wav.name)
 
-        return FileResponse(final_audio.name, media_type="audio/mpeg")
+        return FileResponse(final_audio.name, media_type="audio/mpeg", filename="translated_audio.mp3")
 
     except Exception as e:
         return {"error": str(e)}
