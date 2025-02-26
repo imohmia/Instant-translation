@@ -9,3 +9,4 @@ python-multipart
 pydub
 ffmpeg
 pyttsx3
+TTS
