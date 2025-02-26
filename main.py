@@ -53,7 +53,7 @@ async def translate_speech(file: UploadFile = File(...), target_language: str = 
         # Convert MP3 to ensure compatibility
         final_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
         sound = AudioSegment.from_file(temp_audio.name, format="mp3")
-        sound.export(final_audio.name, format="mp3")
+       sound.export(final_audio_path, format="mp3", bitrate="192k")  # Force proper encoding
 
         # Clean up temp files
         os.remove(temp_input.name)
