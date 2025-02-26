@@ -37,10 +37,20 @@ async def translate_speech(file: UploadFile = File(...), target_language: str = 
         # Translate text
         translated_text = translator.translate(text, dest=target_language).text
         
-        # Convert translated text to speech
-        tts = gTTS(translated_text, lang=target_language)
-        temp_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
-        tts.save(temp_audio.name)
+       import pyttsx3
+
+if target_language == "fa":
+    # Use pyttsx3 for Farsi
+    tts_engine = pyttsx3.init()
+    temp_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+    tts_engine.save_to_file(translated_text, temp_audio.name)
+    tts_engine.runAndWait()
+else:
+    # Use gTTS for other languages
+    tts = gTTS(translated_text, lang=target_language)
+    temp_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+    tts.save(temp_audio.name)
+
         
         # Clean up temp files
         os.remove(temp_input.name)
