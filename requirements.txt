@@ -6,3 +6,5 @@ speechrecognition
 gtts
 pydantic
 python-multipart
+pydub
+ffmpeg
