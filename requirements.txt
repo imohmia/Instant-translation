@@ -8,3 +8,4 @@ pydantic
 python-multipart
 pydub
 ffmpeg
+pyttsx3
