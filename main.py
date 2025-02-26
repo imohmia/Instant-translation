@@ -8,6 +8,7 @@ import tempfile
 from fastapi.responses import FileResponse
 from pydub import AudioSegment
 import os
+import pyttsx3
 
 app = FastAPI()
 translator = Translator()
@@ -56,6 +57,12 @@ else:
         os.remove(temp_input.name)
         if 'temp_wav' in locals():
             os.remove(temp_wav.name)
+
+# Convert MP3 to ensure compatibility
+final_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+sound = AudioSegment.from_file(temp_audio.name, format="mp3")
+sound.export(final_audio.name, format="mp3")
+
         
         return FileResponse(temp_audio.name, media_type="audio/mpeg")
     except Exception as e:
