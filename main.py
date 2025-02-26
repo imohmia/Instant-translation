@@ -2,11 +2,11 @@ from fastapi import FastAPI, UploadFile, File
 import io
 import speech_recognition as sr
 from googletrans import Translator
-from gtts import gTTS
 import tempfile
 from fastapi.responses import FileResponse
 from pydub import AudioSegment
 import os
+from TTS.api import TTS  # Import Coqui TTS
 
 app = FastAPI()
 translator = Translator()
@@ -40,11 +40,12 @@ async def translate_speech(file: UploadFile = File(...), target_language: str = 
         temp_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
 
         if target_language == "fa":
-            # Use gTTS workaround for Farsi
-            tts = gTTS(translated_text, lang="fa")
-            tts.save(temp_audio.name)
+            # Use Coqui TTS for Farsi (Persian)
+            tts = TTS("tts_models/multilingual/multi-dataset/your-tts")
+            tts.tts_to_file(text=translated_text, file_path=temp_audio.name)
         else:
             # Use gTTS for all other languages
+            from gtts import gTTS
             tts = gTTS(translated_text, lang=target_language)
             tts.save(temp_audio.name)
 
